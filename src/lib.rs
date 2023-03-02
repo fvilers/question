@@ -16,7 +16,7 @@ impl<R: io::BufRead, W: io::Write> Question<R, W> {
         Self { reader, writer }
     }
 
-    pub fn ask<S: AsRef<str>>(&mut self, question: S) -> io::Result<Option<String>> {
+    pub fn ask(&mut self, question: impl Into<String>) -> io::Result<Option<String>> {
         let question = ensure_ends_with_whitespace(question);
 
         self.writer.write_all(question.as_bytes())?;
@@ -32,8 +32,8 @@ impl<R: io::BufRead, W: io::Write> Question<R, W> {
     }
 }
 
-fn ensure_ends_with_whitespace<S: AsRef<str>>(source: S) -> String {
-    let source = source.as_ref().to_owned();
+fn ensure_ends_with_whitespace(source: impl Into<String>) -> String {
+    let source = source.into();
 
     if source.ends_with(' ') {
         source
